@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.developerhaoz.sleephelper.R;
 import com.example.developerhaoz.sleephelper.common.view.CommonPagerAdapter;
@@ -33,6 +34,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -69,6 +72,8 @@ public class HomeActivity extends AppCompatActivity {
     private static final String[] TITLES = new String[]{"日记", "段子", "妹子"};
 
     private List<Fragment> mFragments;
+    private boolean quit = false; //设置退出标识
+
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, HomeActivity.class);
@@ -159,11 +164,33 @@ public class HomeActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
+
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        // TODO: 在主页面按返回键时弹出对话框，提示用户是否退出程序
+        if (quit == false) {
+            //询问退出程序
+            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            new Timer(true).schedule(new TimerTask() {
+                //启动定时任务
+                @Override
+                public void run() {
+                    quit = false; //重置退出标识
+
+                     }
+            }, 2000);
+            //2秒后运行run()方法
+            quit = true;
+        } else {
+            //确认退出程序
+            super.onBackPressed();
+            finish();
+        }
     }
+
+
+
+
+
 }
 
 
